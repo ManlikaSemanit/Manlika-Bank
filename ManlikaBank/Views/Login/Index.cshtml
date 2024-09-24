@@ -1,0 +1,61 @@
+﻿@using ManlikaBank.Models;
+@using System.Web.Mvc.Html;
+
+@model LoginModel
+
+@{
+    Layout = "~/Views/Shared/_LayoutLogin.cshtml";
+    ViewBag.Title = "Login";
+}
+
+<div>
+    <h1 id="title">Login</h1>
+    Username. : <input type="text" id="username" name="username"><br />
+    <br />
+    Password : <input type="password" id="password" name="password"><br />
+    <br />
+    <button type="button" id="Submit">Login</button>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        $("#Submit").click(function (e) {
+            e.preventDefault();
+            if ($("#username").val() == '') {
+                alert("Please fill username");
+            }
+            else if ($("#password").val() == '') {
+                alert("Please fill password");
+            }
+
+            if ($("#username").val() != '' && $("#password").val() != '') {
+                var form_data = {
+                    username: $("#username").val(),
+                    password: $("#password").val()
+                };
+
+                $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("Signin", "Login")',
+                        data: JSON.stringify(form_data),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            if (data.IsSuccessful == true) {
+                                    window.location.href="@Url.Action("Index", "Account")";
+                                }
+                            else {
+                                alert(data.ErrorMessage);
+                            }
+                        },
+                        error: function (jqXHR, exception) {
+                            return false;
+                        }
+                });
+            }
+
+        });
+    });
+
+
+</script>

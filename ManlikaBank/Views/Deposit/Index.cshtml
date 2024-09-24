@@ -1,0 +1,58 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Deposit Page";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title></title>
+</head>
+<body>
+    <div>
+        <h1 id="title">Deposit Money</h1>
+        <input type="number" id="amount" min="0" step=".01" placeholder="0.00" name="amount"> THB<br />
+        <br />
+        <button type="button" id="Submit">Submit</button>
+        <button type="button" id="Cancel">Cancel</button>
+    </div>
+</body>
+</html>
+
+<script type="text/javascript">
+    $("#Submit").click(function (e) {
+        e.preventDefault();
+        if ($("#amount").val() == 0) {
+            alert("Please fill Amount");
+        }
+
+        var form_data = {
+             amount: $("#amount").val()
+        };
+
+        $.ajax({
+                type: "POST",
+                url: '@Url.Action("DepositMoney", "Deposit")',
+                data: JSON.stringify(form_data),
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    if (data.IsSuccessful == true) {
+                        alert("Deposit Success!");
+                            window.location.href="@Url.Action("Index", "Account")";
+                        }
+                    else {
+                        alert(data.ErrorMessage);
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    return false;
+                }
+        });
+    });
+
+    $("#Cancel").click(function (e) {
+        window.location.href="@Url.Action("Index", "Account")";
+    });
+</script>

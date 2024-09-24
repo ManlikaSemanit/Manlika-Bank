@@ -1,0 +1,59 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Transfer Page";
+}
+
+<div>
+    <h1 id="title">Transfer Money</h1>
+    Bank No. : <input type="text" id="bankno" name="bankno"><br />
+    <br />
+    Amount : <input type="number" id="amount" min="0" step=".01" placeholder="0.00" name="amount"> THB<br />
+    <br />
+    <button type="button" id="Submit">Submit</button>
+    <button type="button" id="Cancel">Cancel</button>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        
+        $("#Submit").click(function (e) {
+            e.preventDefault();
+            if ($("#bankno").val() == '') {
+                alert("Please fill Bank No.");
+            }
+            else if ($("#amount").val() == 0) {
+                alert("Please fill Amount");
+            }
+
+            var form_data = {
+                 bankno: $("#bankno").val(),
+                 amount: $("#amount").val()
+            };
+
+            $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("TransferMoney", "Transfer")',
+                    data: JSON.stringify(form_data),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (data) {
+                        if (data.IsSuccessful == true) {
+                                alert("Transfer Success!");
+                                window.location.href="@Url.Action("Index", "Account")";
+                            }
+                        else {
+                            alert(data.ErrorMessage);
+                        }
+                    },
+                    error: function (jqXHR, exception) {
+                        return false;
+                    }
+            });
+        });
+
+        $("#Cancel").click(function (e) {
+            window.location.href="@Url.Action("Index", "Account")";
+        });
+    });
+
+
+</script>
